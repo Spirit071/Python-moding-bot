@@ -1,0 +1,89 @@
+import discord
+from discord.ext import *
+from time import *
+client = discord.Client(command_prefix='!')
+TOKEN = ''
+
+
+@client.event
+async def on_ready():
+    print('Online!')
+    activity = discord.Game(name="Itayos ϟ Community")
+
+
+async def on_message(message):
+    msg = str(message.content)
+    if len(msg) < 120:
+        await message.channel.purge(limit=1)
+
+
+@client.command()
+async def say(ctx, Say):
+    Say = str(Say)
+    say = Say
+    say = Say
+    Say = say
+    say = Say
+    if say is None or say =='' or say ==" ":
+        await ctx.send("Don't you want me to say anything?")
+        sleep(3)
+        await ctx.channel.purge(limit=1)
+    else:
+        embed = discord.Embed(title=None, description=say, color=discord.Color.blurple())
+        await ctx.send(embed = embed)
+
+
+async def mute(member: discord.Member, ctx, duration=None, reason=None, aliases=['mute', 'm']):
+    if duration is None:
+        embed = discord.Embed(title='**Error!**', description="**No time provided!**", color=discord.Color.red())
+        await ctx.send(embed)
+    elif member is None:
+        embed = discord.Embed(title='**Error!**', description="**Please specify a user!**", color=discord.Color.red())
+        await ctx.send(embed)
+    else:
+        if ctx.message.author.server_permissions.administrator or ctx.message.author.id == '946427656407248988':
+            role = discord.utils.get(member.server.roles, name='Muted')
+            embed = discord.Embed(title="User Muted!",
+                                  description="**{0}** was muted by **{1}**!".format(member, ctx.message.author),
+                                  color='red')
+            await client.say(embed=embed)
+            int(duration)
+            while duration != 0:
+                duration -= 1
+            # return
+
+
+async def unban(ctx, *, member: discord.Member, aliases=['ub']):
+    banned_users = await ctx.guild.bans()
+    member_name, member_discriminator = member.split("#")
+
+    for ban_entry in banned_users:
+        user = ban_entry.user
+
+        if (user.name, user.discriminator) == (member_name, member_discriminator):
+            await ctx.guild.unban(user)
+            await ctx.send(f'Unbanned {user.mention}')
+            sleep(2.5)
+            await ctx.channel.purge(limit=1)
+            # simple unabn
+            return
+
+
+async def ban(ctx, member : discord.Member, reason=None):
+    # """Bans a user"""
+    if reason == None:
+        await ctx.send(f"Woah {ctx.author.mention}, Make sure you provide a reason!")
+    else:
+        messageok = f"You have been banned from {ctx.guild.name} for {reason}"
+        embed = discord.Embed(title='**The ban hammer hits again!!**', description=messageok, color=discord.Color.green())
+        await member.send(embed)
+
+
+async def kick(ctx, member:discord.Member, reason = None):
+    await member.kick()
+    embedDDDD = discord.Embed(title='**KICK!**', description=f"**Kicked {member}**", color=discord.Color.green())
+    await ctx.send(embedDDDD)
+    sleep(3)
+    await ctx.channel.purge(limit=1)
+
+client.run(TOKEN)
